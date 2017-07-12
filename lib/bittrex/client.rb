@@ -1,5 +1,6 @@
-require 'faraday'
+require 'rest-client'
 require 'base64'
+require 'json'
 
 module Bittrex
   class Client
@@ -14,32 +15,22 @@ module Bittrex
 
     def get(path, params = {}, headers = {})
       nonce = Time.now.to_i
-      response = connection.get do |req|
-        url = "#{HOST}/#{path}"
-        req.params.merge!(params)
-        req.url(url)
-
-        if key
-          req.params[:apikey]   = key
-          req.params[:nonce]    = nonce
-          req.headers[:apisign] = signature(url, nonce)
-        end
+      url = "#{HOST}/#{path}"
+      payload = {}
+      payload[:params] = params
+      if key
+        payload[:params][:apikey] = key
+        payload[:params][:nonce]  = nonce
+        payload[:headers][:apisign] = signature(url, nonce)
       end
-
-      JSON.parse(response.body)['result']
+      payload[:params].merge(headers)
+      RestClient.get(url, payload)
     end
 
     private
 
     def signature(url, nonce)
       OpenSSL::HMAC.hexdigest('sha512', secret, "#{url}?apikey=#{key}&nonce=#{nonce}")
-    end
-
-    def connection
-      @connection ||= Faraday.new(:url => HOST) do |faraday|
-        faraday.request  :url_encoded
-        faraday.adapter  Faraday.default_adapter
-      end
     end
   end
 end
