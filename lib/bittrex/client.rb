@@ -18,6 +18,7 @@ module Bittrex
       url = "#{HOST}/#{path}"
       payload = {}
       payload[:params] = params
+      payload[:headers] = headers
       if key
         payload[:params][:apikey] = key
         payload[:params][:nonce]  = nonce

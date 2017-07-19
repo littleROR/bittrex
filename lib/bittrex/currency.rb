@@ -15,7 +15,11 @@ module Bittrex
     end
 
     def self.all
-      client.get('public/getcurrencies').map{|data| new(data) }
+      response = client.get('public/getcurrencies')
+      if response.code >= 200 && response.code < 300
+        result = JSON.parse(response.body)['result'].map { |data| new(data) }
+      end
+      result || []
     end
 
     private
