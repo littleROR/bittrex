@@ -19,7 +19,13 @@ module Bittrex
     end
 
     def self.all
-      client.get('account/getwithdrawalhistory').map{|data| new(data) }
+      response = client.get('account/getwithdrawalhistory')
+      if response.code >= 200 && response.code < 300
+        result = JSON.parse(response.body)['result']
+        
+        result = result.map { |data| new(data) } if result
+      end
+      result || []
     end
 
     private
