@@ -6,7 +6,7 @@ require 'bittrex/version'
 Gem::Specification.new do |spec|
   spec.name          = "bittrex"
   spec.version       = Bittrex::VERSION
-  spec.authors       = ["Matthew Werner, Bogdan Timofte"]
+  spec.authors       = ["Matthew Werner, Bogdan Timofte, Andrei Butnaru"]
   spec.email         = ["m@mjw.io"]
   spec.summary       = %q{API Client for the Bittrex API}
   spec.description   = %q{API Client for the Bittrex API}
